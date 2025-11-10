@@ -6,7 +6,6 @@ module SolidusGraphqlApi
     mutation Types::Mutation
 
     use ::BatchLoader::GraphQL
-    use GraphQL::Pagination::Connections
 
     rescue_from CanCan::AccessDenied do |exception, _object, _args, _context, _field|
       raise GraphQL::ExecutionError, exception.message
