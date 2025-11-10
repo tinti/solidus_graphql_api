@@ -6,12 +6,13 @@ module SolidusGraphqlApi
     mutation Types::Mutation
 
     use ::BatchLoader::GraphQL
+    use GraphQL::Pagination::Connections
 
-    rescue_from CanCan::AccessDenied do |exception|
+    rescue_from CanCan::AccessDenied do |exception, _object, _args, _context, _field|
       raise GraphQL::ExecutionError, exception.message
     end
 
-    rescue_from ActiveRecord::RecordNotFound do
+    rescue_from ActiveRecord::RecordNotFound do |exception, _object, _args, _context, _field|
       raise GraphQL::ExecutionError, I18n.t(:'activerecord.exceptions.not_found')
     end
 

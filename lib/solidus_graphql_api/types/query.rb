@@ -4,10 +4,14 @@ module SolidusGraphqlApi
   module Types
     class Query < Base::Object
       # Used by Relay to lookup objects by UUID:
-      add_field(GraphQL::Types::Relay::NodeField)
+      field :node, GraphQL::Types::Relay::Node, null: true do
+        argument :id, GraphQL::Types::ID, required: true
+      end
 
       # Fetches a list of objects given a list of UUIDs
-      add_field(GraphQL::Types::Relay::NodesField)
+      field :nodes, [GraphQL::Types::Relay::Node], null: true do
+        argument :ids, [GraphQL::Types::ID], required: true
+      end
 
       field :countries, Country.connection_type,
             null: false,
@@ -78,6 +82,14 @@ module SolidusGraphqlApi
 
       def current_order
         context[:current_order]
+      end
+
+      def node(id:)
+        context.schema.object_from_id(id, context)
+      end
+
+      def nodes(ids:)
+        ids.map { |id| context.schema.object_from_id(id, context) }
       end
     end
   end
